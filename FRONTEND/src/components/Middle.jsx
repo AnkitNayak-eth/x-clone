@@ -1,5 +1,5 @@
 "use client";
-import Avatar from "@/app/assests/avatar.png";
+import Avatar from "@/assests/avatar.png";
 import Image from "next/image";
 import { useState } from "react";
 import { IoImageOutline } from "react-icons/io5";

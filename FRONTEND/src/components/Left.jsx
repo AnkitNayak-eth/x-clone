@@ -2,7 +2,7 @@
 import { FaXTwitter } from "react-icons/fa6";
 import { navigationMenu } from "../constants/navigation";
 import Link from "next/link";
-import Avatar from "@/app/assests/avatar.png";
+import Avatar from "@/assests/avatar.png";
 import Image from "next/image";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
@@ -27,7 +27,7 @@ export default function Left() {
         {navigationMenu.map((item, index) => (
           <Link key={index} href={item.path} legacyBehavior>
             <div className="flex items-center">
-              <div className="cursor-pointer flex gap-4 py-3 items-center hover:bg-[rgb(24,24,24)] rounded-full">
+              <div className="cursor-pointer flex gap-4 p-3 items-center hover:bg-[rgb(24,24,24)] rounded-full">
                 {item.icon}
                 <p className="text-2xl">{item.title}</p>
               </div>

@@ -1,5 +1,5 @@
-import Left from "@/app/components/Left";
-import Middle from "@/app/components/Middle";
+import Left from "@/components/Left";
+import Middle from "@/components/Middle";
 
 export default function Homepage() {
     return (
