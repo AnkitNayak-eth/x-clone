@@ -1,20 +1,12 @@
 "use client";
-import Avatar from "@/assests/avatar.png";
-import thumb from "@/assests/thumb.png";
+import Avatar from "@/assets/avatar.png";
+import thumb from "@/assets/thumb.png";
 import Image from "next/image";
 import { useState } from "react";
-import { IoImageOutline } from "react-icons/io5";
-import { RiFileGifLine, RiAiGenerate } from "react-icons/ri";
+import { IoImageOutline, IoLocationOutline, IoStatsChart } from "react-icons/io5";
+import { RiFileGifLine, RiAiGenerate, RiCalendarScheduleLine, RiShare2Line, RiHeart3Line } from "react-icons/ri";
 import { MdOutlinePoll } from "react-icons/md";
-import { FaRegSmile } from "react-icons/fa";
-import { RiCalendarScheduleLine } from "react-icons/ri";
-import { IoLocationOutline } from "react-icons/io5";
-import { FaRegComment } from "react-icons/fa";
-import { FaRetweet } from "react-icons/fa6";
-import { RiHeart3Line } from "react-icons/ri";
-import { IoStatsChart } from "react-icons/io5";
-import { FaRegBookmark } from "react-icons/fa";
-import { RiShare2Line } from "react-icons/ri";
+import { FaRegSmile, FaRegComment, FaRetweet, FaRegBookmark } from "react-icons/fa";
 
 export default function Middle() {
   const [tweet, setTweet] = useState("");
@@ -30,11 +22,10 @@ export default function Middle() {
 
   return (
     <section className="text-white flex flex-col items-center border-l border-r border-gray-700">
-      <div className="p-5 flex gap-4 w-full">
+      <div className="p-5 flex gap-4 w-full border-b border-gray-700">
         <div className="flex-shrink-0">
-        <Image src={Avatar} alt="username" width={50} height={50} />
+          <Image src={Avatar} alt="username" width={50} height={50} />
         </div>
-
         <div className="flex-1 flex flex-col">
           <textarea
             value={tweet}
@@ -48,29 +39,14 @@ export default function Middle() {
           />
           <div className="flex items-center justify-between mt-4">
             <div className="flex gap-5 text-blue-500">
-              <button className="hover:text-blue-400">
-                <IoImageOutline size={24} />
-              </button>
-              <button className="hover:text-blue-400">
-                <RiFileGifLine size={24} />
-              </button>
-              <button className="hover:text-blue-400">
-                <RiAiGenerate size={24} />
-              </button>
-              <button className="hover:text-blue-400">
-                <MdOutlinePoll size={24} />
-              </button>
-              <button className="hover:text-blue-400">
-                <FaRegSmile size={24} />
-              </button>
-              <button className="hover:text-blue-400">
-                <RiCalendarScheduleLine size={24} />
-              </button>
-              <button className="hover:text-blue-400">
-                <IoLocationOutline size={24} />
-              </button>
+              {[IoImageOutline, RiFileGifLine, RiAiGenerate, MdOutlinePoll, FaRegSmile, RiCalendarScheduleLine, IoLocationOutline].map(
+                (Icon, idx) => (
+                  <button key={idx} className="hover:text-blue-400">
+                    <Icon size={24} />
+                  </button>
+                )
+              )}
             </div>
-
             <button
               onClick={handlePost}
               className={`bg-blue-500 text-white px-5 py-2 rounded-full font-semibold transition-colors ${
@@ -90,9 +66,8 @@ export default function Middle() {
         <div key={index} className="p-5 w-full border-t border-gray-700">
           <div className="flex gap-4">
             <div className="flex-shrink-0">
-            <Image src={Avatar} alt="username" width={50} height={50} />
+              <Image src={Avatar} alt="username" width={50} height={50} />
             </div>
-
             <div className="flex-1">
               <div className="text-lg">
                 <div className="flex items-center gap-2">

@@ -2,7 +2,7 @@
 import { FaXTwitter } from "react-icons/fa6";
 import { navigationMenu } from "../constants/navigation";
 import Link from "next/link";
-import Avatar from "@/assests/avatar.png";
+import Avatar from "@/assets/avatar.png";
 import Image from "next/image";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";

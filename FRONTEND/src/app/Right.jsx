@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { GoSearch } from "react-icons/go";
-import Avatar from "@/assests/avatar.png";
+import Avatar from "@/assets/avatar.png";
 
 export default function Right() {
   return (
