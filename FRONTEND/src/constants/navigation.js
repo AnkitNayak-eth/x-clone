@@ -15,7 +15,7 @@ export const navigationMenu=[
     {
         title:"Home",
         icon:<GoHome size={40} />,
-        path:"/home"
+        path:"/"
     },
     {
         title:"Explore",
