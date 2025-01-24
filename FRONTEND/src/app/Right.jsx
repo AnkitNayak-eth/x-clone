@@ -1,8 +1,23 @@
+"use client";
 import Image from "next/image";
 import { GoSearch } from "react-icons/go";
 import Avatar from "@/assets/avatar.png";
+import { useState } from "react";
+import Subscription from "@/components/Subscription";
 
 export default function Right() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  
+    const handleMenuToggle = () => {
+      console.log("Toggling menu");
+      setMenuOpen(!menuOpen);
+    };
+  
+    const handleClose = (e) => {
+      if (e.target.id === "modal") {
+        setMenuOpen(false);
+      }
+    };
   return (
     <div className="text-white p-4 w-full flex flex-col gap-4 ">
       <div className=" text-gray-400 rounded-full flex items-center px-4 py-3 w-full border border-gray-700">
@@ -19,10 +34,19 @@ export default function Right() {
         <p className="text-sm mb-4">
           Unlock new features and, if eligible, receive a share of revenue.
         </p>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full">
+
+        <button onClick={handleMenuToggle} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-full">
           Subscribe
         </button>
+
       </div>
+
+      {menuOpen && (
+        <Subscription
+          handleClose={handleClose}
+          handleMenuToggle={handleMenuToggle}
+        />
+      )}
 
       <div className="rounded-3xl p-5 border border-gray-700 ">
         <h2 className="text-2xl font-semibold mb-4">What's happening</h2>

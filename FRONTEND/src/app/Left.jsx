@@ -6,6 +6,7 @@ import Avatar from "@/assets/avatar.png";
 import Image from "next/image";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 export default function Left() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,7 +62,11 @@ export default function Left() {
             <p className="text-gray-500">@AnkitNayak_eth</p>
           </div>
           <div>
-            <BsThreeDots size={30} />
+            {menuOpen ? (
+              <IoIosCloseCircleOutline size={30} />
+            ) : (
+              <BsThreeDots size={30} />
+            )}
           </div>
         </div>
       </div>

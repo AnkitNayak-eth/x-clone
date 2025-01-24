@@ -18,14 +18,28 @@ import thumb from "@/assets/thumb.png";
 import { useState } from "react";
 import { FaRegBookmark, FaRegComment, FaRetweet } from "react-icons/fa6";
 import { FaUserEdit } from "react-icons/fa";
+import UserEdit from "../../components/UserEdit";
+import Post from "@/components/Post";
+import Subscription from "@/components/Subscription";
 
 export default function Profile() {
   const handleBack = () => {
     window.history.back();
   };
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const handleMenuToggle = () => {
+    console.log("Toggling menu");
     setMenuOpen(!menuOpen);
   };
+
+  const handleClose = (e) => {
+    if (e.target.id === "modal") {
+      setMenuOpen(false);
+    }
+  };
+
   const [activeTab, setActiveTab] = useState("Posts");
 
   const tabs = ["Posts", "Replies", "Highlights", "Articles", "Media", "Likes"];
@@ -33,7 +47,7 @@ export default function Profile() {
   return (
     <section className="text-white flex-1 flex flex-col items-center border-l border-r border-gray-700">
       <div className="w-full">
-        <div className="p-5 flex items-start gap-4 border-b border-gray-700 sticky top-0 z-10">
+        <div className="p-5 flex items-start gap-4 border-b border-gray-700 sticky top-0">
           <IoArrowBack
             className="cursor-pointer text-gray-400 hover:text-white transition"
             onClick={handleBack}
@@ -64,8 +78,10 @@ export default function Profile() {
               className="rounded-full"
             />
           </div>
-          
-          <button className="flex items-center gap-2 px-4 py-2 mt-28 border border-gray-700 text-white text-sm rounded-full hover:bg-blue-600 transition">
+          <button
+            onClick={handleMenuToggle}
+            className="flex items-center gap-2 px-4 py-2 mt-28 border border-gray-700 text-white text-sm rounded-full hover:bg-blue-600 transition"
+          >
             <FaUserEdit size={20} />
             Edit Profile
           </button>
@@ -73,15 +89,13 @@ export default function Profile() {
       </div>
 
       {menuOpen && (
-        <div className="absolute w-full -mt-20">
-          <button
-            onClick={handleMenuToggle}
-            className="bg-black text-white border text-2xl font-bold p-4 w-3/4 rounded-full"
-          >
-            Logout
-          </button>
-        </div>
+        <UserEdit
+          handleClose={handleClose}
+          handleMenuToggle={handleMenuToggle}
+        />
       )}
+
+
 
       <div className="px-6 pt-16 pb-6 w-full">
         <div className="flex gap-8">
@@ -158,90 +172,7 @@ export default function Profile() {
           ))}
         </div>
 
-        <div>
-          {activeTab === "Posts" && (
-            <div>
-              {[1, 1, 1, 1].map((item, index) => (
-                <div
-                  key={index}
-                  className="p-5 w-full border-b border-gray-700"
-                >
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <Image
-                        src={Avatar}
-                        alt="username"
-                        width={50}
-                        height={50}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-lg">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-white">Sarthak</span>
-                          <span className="text-gray-500">
-                            @sarthakbaral_28 · just now
-                          </span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Link href="/tweet">
-                          <div className="block">
-                            <p className="mt-2 text-white text-xl">
-                              Rate my Portfolio website...
-                            </p>
-                            <div className="mt-4 border border-gray-700 rounded-3xl overflow-hidden">
-                              <Image
-                                src={thumb}
-                                alt="Tweet media"
-                                width={500}
-                                height={300}
-                                className="rounded-lg w-full"
-                              />
-                            </div>
-                          </div>
-                        </Link>
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between text-gray-400">
-                        <button className="flex items-center gap-2 hover:text-blue-400">
-                          <FaRegComment size={24} />
-                          <span>0</span>
-                        </button>
-                        <button className="flex items-center gap-2 hover:text-green-400">
-                          <FaRetweet size={24} />
-                          <span>0</span>
-                        </button>
-                        <button className="flex items-center gap-2 hover:text-pink-400">
-                          <RiHeart3Line size={24} />
-                          <span>0</span>
-                        </button>
-                        <button className="flex items-center gap-2 hover:text-gray-300">
-                          <IoStatsChart size={24} />
-                          <span>0</span>
-                        </button>
-                        <div className="flex gap-4">
-                          <button className="hover:text-gray-300">
-                            <FaRegBookmark size={24} />
-                          </button>
-                          <button className="hover:text-gray-300">
-                            <RiShare2Line size={24} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {activeTab === "Replies" && <p>Here are your replies!</p>}
-          {activeTab === "Highlights" && <p>Here are your highlights!</p>}
-          {activeTab === "Articles" && <p>Here are your articles!</p>}
-          {activeTab === "Media" && <p>Here is your media!</p>}
-          {activeTab === "Likes" && <p>Here are your likes!</p>}
-        </div>
+        <Post />
       </div>
     </section>
   );
