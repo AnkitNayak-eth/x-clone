@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { FaCheck} from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 export default function Subscription({ handleClose, handleMenuToggle }) {
@@ -11,14 +11,12 @@ export default function Subscription({ handleClose, handleMenuToggle }) {
       className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
     >
       <div className="bg-black w-full max-w-3xl rounded-lg shadow-lg p-5 flex flex-col border border-gray-700">
-        {/* Modal Header */}
         <div className="flex items-center justify-between gap-4 border-b border-gray-700 sticky top-0 z-10 pb-4">
           <div>
             <h1 className="text-2xl font-bold">Subscription</h1>
           </div>
         </div>
 
-        {/* PremiumSignUp Content */}
         <div className="mt-6">
           <div className="text-center mb-10">
             <FaXTwitter className="text-blue-500 text-6xl mx-auto mb-4" />
@@ -28,9 +26,7 @@ export default function Subscription({ handleClose, handleMenuToggle }) {
             </p>
           </div>
 
-          {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
-            {/* Basic Plan */}
             <div className="bg-gray-900 p-8 rounded-lg border border-gray-800">
               <h2 className="text-2xl font-bold mb-4">Basic</h2>
               <p className="text-gray-400 mb-6">
@@ -56,7 +52,6 @@ export default function Subscription({ handleClose, handleMenuToggle }) {
               </button>
             </div>
 
-            {/* Pro Plan */}
             <div className="bg-gray-900 p-8 rounded-lg border border-gray-800">
               <h2 className="text-2xl font-bold mb-4">Pro</h2>
               <p className="text-gray-400 mb-6">
@@ -82,7 +77,6 @@ export default function Subscription({ handleClose, handleMenuToggle }) {
               </button>
             </div>
 
-            {/* Premium Plan */}
             <div className="bg-gray-900 p-8 rounded-lg border border-gray-800">
               <h2 className="text-2xl font-bold mb-4">Premium</h2>
               <p className="text-gray-400 mb-6">
@@ -109,7 +103,6 @@ export default function Subscription({ handleClose, handleMenuToggle }) {
             </div>
           </div>
 
-          {/* Footer */}
           <div className="mt-10 text-center text-gray-500">
             <p>
               Questions?{" "}
