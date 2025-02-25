@@ -30,7 +30,7 @@ public class Tweet {
     private List<Tweet> replyTweets = new ArrayList<>();
 
     @ManyToMany
-    private List<User> retweetUsers = new ArrayList<>();
+    private List<User> reTweetUsers = new ArrayList<>();
 
     @ManyToOne
     private Tweet replyFor;
