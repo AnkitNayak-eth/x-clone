@@ -2,6 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Left from "./Left";
 import Right from "./Right";
+import { Providers } from "./Providers"; // Import Providers
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,21 +26,24 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-wrap px-5 lg:px-24 justify-between">
-          <div className="hidden lg:block lg:w-2/12 w-full relative">
-            <div className="sticky top-0 h-screen overflow-hidden">
-              <Left />
+        <NextTopLoader />
+        <Providers>
+          <div className="flex flex-wrap px-5 lg:px-24 justify-between">
+            <div className="hidden lg:block lg:w-2/12 w-full relative">
+              <div className="sticky top-0 h-screen overflow-hidden">
+                <Left />
+              </div>
+            </div>
+            <div className="w-full lg:w-7/12 px-5 lg:px-9 relative overflow-auto">
+              {children}
+            </div>
+            <div className="hidden lg:block lg:w-3/12 w-full relative">
+              <div className="sticky top-0 h-screen overflow-hidden">
+                <Right />
+              </div>
             </div>
           </div>
-          <div className="w-full lg:w-7/12 px-5 lg:px-9 relative overflow-auto">
-            {children}
-          </div>
-          <div className="hidden lg:block lg:w-3/12 w-full relative">
-            <div className="sticky top-0 h-screen overflow-hidden">
-              <Right />
-            </div>
-          </div>
-        </div>
+        </Providers>
       </body>
     </html>
   );

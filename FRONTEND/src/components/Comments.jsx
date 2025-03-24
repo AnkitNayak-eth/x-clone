@@ -4,61 +4,36 @@ import { FaRegBookmark, FaRegComment, FaRetweet } from "react-icons/fa6";
 import { IoStatsChart } from "react-icons/io5";
 import { RiHeart3Line, RiShare2Line } from "react-icons/ri";
 import Avatar from "@/assets/avatar.png";
-import ReComment from "./ReComment";
-import { useState } from "react";
+import PostComment from "@/components/PostComment";
 
-export default function Comment() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const handleMenuToggle = () => {
-    console.log("Toggling menu");
-    setMenuOpen(!menuOpen);
-  };
-
-  const handleClose = (e) => {
-    if (e.target.id === "modal") {
-      setMenuOpen(false);
-    }
-  };
+export default function Comments({ selectedTweet }) {
   return (
     <div>
-      {[1, 1, 1, 1].map((item, index) => (
-        <div
-          key={index}
-          className="flex gap-4 w-full border-b border-gray-700 p-5"
-        >
+      {selectedTweet?.tweet?.replyTweets?.map((reply, index) => (
+        <div key={index} className="flex gap-4 w-full border-b border-gray-700 p-5">
           <div className="flex-shrink-0">
-            <Image src={Avatar} alt="username" width={50} height={50} />
+            <Image src={reply.user?.image || Avatar} alt={reply.user?.fullName || "User"} width={50} height={50} />
           </div>
-
           <div className="flex-1 flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white">Sarthak</span>
-              <span className="text-gray-500">@sarthakbaral_28 · just now</span>
+              <span className="font-bold text-white">{reply.user?.fullName || "Unknown"}</span>
+              <span className="text-gray-500">@{reply.user?.email?.split("@")[0]} · {new Date(reply.createdAt).toLocaleTimeString()}</span>
             </div>
-
             <Link href="/tweet" className="mt-2 block">
-              <p className="text-white text-xl">Rate my Portfolio website...</p>
+              <p className="text-white text-xl">{reply.content}</p>
             </Link>
-
             <div className="mt-4 flex items-center justify-between text-gray-400">
-              <button onClick={handleMenuToggle} className="flex items-center gap-2 hover:text-blue-400">
+              <button className="flex items-center gap-2 hover:text-blue-400">
                 <FaRegComment size={24} />
-                <span>0</span>
+                <span>{reply.totalReplies}</span>
               </button>
-              {menuOpen && (
-                <ReComment
-                  handleClose={handleClose}
-                  handleMenuToggle={handleMenuToggle}
-                />
-              )}
               <button className="flex items-center gap-2 hover:text-green-400">
                 <FaRetweet size={24} />
-                <span>0</span>
+                <span>{reply.totalRetweets}</span>
               </button>
               <button className="flex items-center gap-2 hover:text-pink-400">
                 <RiHeart3Line size={24} />
-                <span>0</span>
+                <span>{reply.totalLikes}</span>
               </button>
               <button className="flex items-center gap-2 hover:text-gray-300">
                 <IoStatsChart size={24} />
