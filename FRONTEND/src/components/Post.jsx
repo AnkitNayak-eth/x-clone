@@ -20,26 +20,48 @@ import { AppContext } from "@/app/Providers";
 
 export default function Post() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(true); // Local loading state
-  const dispatch = useDispatch();
-  const { tweets, error } = useSelector((state) => state.tweet);
+  const [loading, setLoading] = useState(true);
   const [selectedTweetId, setSelectedTweetId] = useState(null);
-  const { setShowSignIn } = useContext(AppContext);
   const [likedTweets, setLikedTweets] = useState({});
   const [RetweetTweets, setRetweetTweets] = useState({});
+  const [publicTweets, setPublicTweets] = useState([]);
+
+  const dispatch = useDispatch();
+  const { tweets, error } = useSelector((state) => state.tweet);
+  const { setShowSignIn, showSignUp } = useContext(AppContext);
 
   useEffect(() => {
-    setLoading(true); // Show preloader
-    dispatch(getAllTweets()).finally(() => setLoading(false)); // Fetch tweets and hide preloader
+    setLoading(true);
+    const jwt = localStorage.getItem("jwt");
+
+    if (!jwt && !showSignUp) {
+      setShowSignIn(true);
+
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tweets/`)
+        .then((res) => res.json())
+        .then((data) => {
+          setPublicTweets(data);
+        })
+        .catch((err) => {
+          console.error("Error fetching public tweets:", err);
+          setShowSignIn(true);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      dispatch(getAllTweets()).finally(() => setLoading(false));
+    }
 
     if (error) {
       dispatch(logout());
     }
-  }, [error, dispatch]);
+  }, [error, dispatch, setShowSignIn, showSignUp]);
 
-  const handleMenuToggle = (tweetId) => {
-    setSelectedTweetId(tweetId); // Set the selected tweet ID
-    setMenuOpen(!menuOpen); // Toggle the menu
+  const requireAuth = (callback) => {
+    if (!jwt) {
+      setShowSignIn(true);
+      return;
+    }
+    callback();
   };
 
   const handleClose = (e) => {
@@ -48,32 +70,41 @@ export default function Post() {
       setSelectedTweetId(null);
     }
   };
-
+  
   const handleLike = (tweetId) => {
-    setLikedTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
-    dispatch(likeTweet(tweetId))
-      .unwrap()
-      .then(() => {
-        dispatch(getAllTweets()); // Fetch only when API call succeeds
-      });
-};
-
-
+    requireAuth(() => {
+      setLikedTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
+      dispatch(likeTweet(tweetId))
+        .unwrap()
+        .then(() => dispatch(getAllTweets()));
+    });
+  };
+  
   const handleRetweet = (tweetId) => {
-    setRetweetTweets((prev) => ({
-      ...prev,
-      [tweetId]: !prev[tweetId], // Toggle UI instantly
-    }));
-    dispatch(createReTweet(tweetId))
-      .unwrap()
-      .then(() => {
-        dispatch(getAllTweets()); // Fetch only when API call succeeds
-      });
+    requireAuth(() => {
+      setRetweetTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
+      dispatch(createReTweet(tweetId))
+        .unwrap()
+        .then(() => dispatch(getAllTweets()));
+    });
   };
-
+  
+  const handleMenuToggle = (tweetId) => {
+    requireAuth(() => {
+      setSelectedTweetId(tweetId);
+      setMenuOpen(!menuOpen);
+    });
+  };
+  
   const handleDelete = (tweetId) => {
-    dispatch(deleteTweet(tweetId));
+    requireAuth(() => {
+      dispatch(deleteTweet(tweetId));
+    });
   };
+  
+
+  const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
+  const tweetsToRender = jwt ? tweets : publicTweets;
 
   if (loading) {
     return (
@@ -87,13 +118,16 @@ export default function Post() {
     setShowSignIn(true);
   }
 
+  console.log(publicTweets, "publicTweets");
+  
+
   return (
     <div className="w-full flex flex-col">
-      {tweets && Array.isArray(tweets) && tweets.length > 0 ? (
-        tweets.map((tweet) => {
+      {tweetsToRender && Array.isArray(tweetsToRender) && tweetsToRender.length > 0 ? (
+        tweetsToRender.map((tweet) => {
           const isLiked = likedTweets[tweet.id] ?? tweet.liked;
           const isRetweet = RetweetTweets[tweet.id] ?? tweet.retweet;
-  
+
           return (
             <div
               key={tweet.id}
@@ -109,7 +143,7 @@ export default function Post() {
                   priority
                 />
               </div>
-  
+
               <div className="flex-1 flex flex-col">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -121,7 +155,7 @@ export default function Post() {
                       {new Date(tweet.createdAt).toLocaleTimeString()}
                     </span>
                   </div>
-  
+
                   <button
                     onClick={() => handleDelete(tweet.id)}
                     className="text-gray-400 hover:text-red-500 transition duration-200"
@@ -129,7 +163,7 @@ export default function Post() {
                     <MdDelete size={30} />
                   </button>
                 </div>
-  
+
                 <Link href={`/tweet/${tweet.id}`} className="mt-2 block">
                   <p className="text-white text-xl">{tweet.content}</p>
                   {tweet.image && (
@@ -145,7 +179,7 @@ export default function Post() {
                     </div>
                   )}
                 </Link>
-  
+
                 <div className="mt-4 flex items-center justify-between text-gray-400">
                   <button
                     onClick={() => handleMenuToggle(tweet.id)}
@@ -154,14 +188,14 @@ export default function Post() {
                     <FaRegComment size={24} />
                     <span>{tweet.totalReplies || 0}</span>
                   </button>
-  
+
                   {menuOpen && selectedTweetId === tweet.id && (
                     <PostComment
                       tweetId={selectedTweetId}
                       handleClose={handleClose}
                     />
                   )}
-  
+
                   <button
                     onClick={() => handleRetweet(tweet.id)}
                     className="flex items-center gap-2 hover:text-green-400 transition-transform duration-300 active:scale-110"
@@ -173,7 +207,7 @@ export default function Post() {
                     )}
                     <span>{tweet.totalRetweets || 0}</span>
                   </button>
-  
+
                   <button
                     onClick={() => handleLike(tweet.id)}
                     className="flex items-center gap-2 hover:text-pink-400"
@@ -185,7 +219,7 @@ export default function Post() {
                     )}
                     <span>{tweet.totalLikes || 0}</span>
                   </button>
-  
+
                   <button className="flex items-center gap-2 hover:text-gray-300">
                     <IoStatsChart size={24} />
                     <span>0</span>
@@ -208,5 +242,4 @@ export default function Post() {
       )}
     </div>
   );
-  
 }

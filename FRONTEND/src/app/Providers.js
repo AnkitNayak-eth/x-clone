@@ -44,11 +44,24 @@ export function Providers({ children }) {
 
   return (
     <Provider store={store}>
-      <AppContext.Provider value={{ setShowSignIn}}>
-      {children}
-      {showSignIn && <SignInForm handleClose={handleClose} setShowSignUp={setShowSignUp} setShowSignIn={setShowSignIn} />}
-      {showSignUp && <SignUpForm handleClose={handleClose} setShowSignIn={setShowSignIn} setShowSignUp={setShowSignUp} />}
-      </AppContext.Provider>
+      <AppContext.Provider value={{ setShowSignIn, showSignUp }}>
+  {children}
+  {showSignIn && (
+    <SignInForm
+      handleClose={handleClose}
+      setShowSignUp={setShowSignUp}
+      setShowSignIn={setShowSignIn}
+    />
+  )}
+  {showSignUp && (
+    <SignUpForm
+      handleClose={handleClose}
+      setShowSignIn={setShowSignIn}
+      setShowSignUp={setShowSignUp}
+    />
+  )}
+</AppContext.Provider>
+
     </Provider>
   );
 }

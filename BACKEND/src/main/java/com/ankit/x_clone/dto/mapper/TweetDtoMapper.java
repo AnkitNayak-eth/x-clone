@@ -72,4 +72,39 @@ public class TweetDtoMapper {
 
         return tweetDto;
     }
+
+    public static TweetDto toPublicTweetDto(Tweet tweet) {
+        UserDto user = UserDtoMapper.toUserDto(tweet.getUser());
+
+        List<Long> retweetUserId = new ArrayList<>();
+        for (User user1 : tweet.getReTweetUsers()) {
+            retweetUserId.add(user1.getId());
+        }
+
+        TweetDto tweetDto = new TweetDto();
+        tweetDto.setId(tweet.getId());
+        tweetDto.setContent(tweet.getContent());
+        tweetDto.setCreatedAt(tweet.getCreatedAt());
+        tweetDto.setImage(tweet.getImage());
+        tweetDto.setTotalLikes(tweet.getLikes().size());
+        tweetDto.setTotalReplies(tweet.getReplyTweets().size());
+        tweetDto.setTotalRetweets(tweet.getReTweetUsers().size());
+        tweetDto.setUser(user);
+        tweetDto.setLiked(false); // public users are not authenticated
+        tweetDto.setRetweet(false);
+        tweetDto.setRetweetUsersId(retweetUserId);
+        tweetDto.setReplyTweets(toPublicTweetDtos(tweet.getReplyTweets()));
+        tweetDto.setVideo(tweet.getVideo());
+
+        return tweetDto;
+    }
+
+    public static List<TweetDto> toPublicTweetDtos(List<Tweet> tweets) {
+        List<TweetDto> tweetDtos = new ArrayList<>();
+        for (Tweet tweet : tweets) {
+            tweetDtos.add(toPublicTweetDto(tweet));
+        }
+        return tweetDtos;
+    }
+
 }

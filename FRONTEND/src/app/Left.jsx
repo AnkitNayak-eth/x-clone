@@ -42,17 +42,25 @@ export default function Left() {
         <FaXTwitter size={40} />
       </div>
       <div className="flex flex-col">
-        {navigationMenu.map((item, index) => (
-          <Link key={index} href={item.path}>
-            <div className="flex items-center">
-              <div className="cursor-pointer flex gap-4 p-3 items-center hover:bg-[rgb(24,24,24)] rounded-full">
-                {item.icon}
-                <p className="text-2xl">{item.title}</p>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+  {navigationMenu.map((item, index) => (
+    <div
+      key={index}
+      className="cursor-pointer flex gap-4 p-3 items-center hover:bg-[rgb(24,24,24)] rounded-full"
+      onClick={(e) => {
+        if (!user) {
+          e.preventDefault();
+          setShowSignIn(true);
+        } else {
+          window.location.href = item.path;
+        }
+      }}
+    >
+      {item.icon}
+      <p className="text-2xl">{item.title}</p>
+    </div>
+  ))}
+</div>
+
       <div className="py-4">
         <button className="bg-white text-black text-2xl font-bold p-4 w-3/4 rounded-full">
           Post
