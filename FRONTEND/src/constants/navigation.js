@@ -38,23 +38,8 @@ export const navigationMenu=[
         path:"/grok"
     },
     {
-        title:"Bookmarks",
-        icon:<CiBookmark size={40} />,
-        path:"/bookmarks"
-    },
-    {
-        title:"Communities",
-        icon:<BsPeople size={40} />,
-        path:"/communities"
-    },
-    {
         title:"Premium",
         icon:<RiVerifiedBadgeLine size={40} />,
-        path:"/verifed"
-    },
-    {
-        title:"Verified Orgs",
-        icon:<AiOutlineThunderbolt size={40} />,
         path:"/verifed"
     },
     {

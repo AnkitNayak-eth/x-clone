@@ -29,7 +29,7 @@ export default function Right() {
         />
       </div>
 
-      <div className="rounded-3xl p-5 border border-gray-700 ">
+      <div className="rounded-3xl p-4 border border-gray-700 ">
         <h2 className="text-2xl font-semibold mb-2">Subscribe to Premium</h2>
         <p className="text-sm mb-4">
           Unlock new features and, if eligible, receive a share of revenue.
@@ -48,14 +48,9 @@ export default function Right() {
         />
       )}
 
-      <div className="rounded-3xl p-5 border border-gray-700 ">
-        <h2 className="text-2xl font-semibold mb-4">What's happening</h2>
-
-        <div className="trending-topic mb-4">
-          <p className="font-semibold">WazirX</p>
-          <p className="text-sm text-gray-400">2,403 posts</p>
-        </div>
-        <div className="trending-topic mb-4">
+      <div className="rounded-3xl p-4 border border-gray-700 ">
+        <h2 className="text-2xl font-semibold mb-2">What's happening</h2>
+        <div className="trending-topic mb-2">
           <p className="font-semibold">Got Slapped By Teacher</p>
           <p className="text-sm text-gray-400">Trending in India</p>
         </div>
@@ -64,17 +59,17 @@ export default function Right() {
           <p className="text-sm text-gray-400">17.5K posts</p>
         </div>
 
-        <button className="text-blue-500 mt-2 hover:underline">
+        <button className="text-blue-500 hover:underline">
           Show more
         </button>
       </div>
 
-      <div className="rounded-3xl p-5 border border-gray-700 ">
+      <div className="rounded-3xl p-4 border border-gray-700 ">
+        <div>
         <h2 className="text-2xl font-semibold mb-4">Who to follow</h2>
 
         {[
           { name: "Hyperfy", username: "@hyperfy_io" },
-          { name: "Debashish", username: "@gridpencil" },
           { name: "Binance", username: "@binance" },
         ].map((user, index) => (
           <div
@@ -94,9 +89,10 @@ export default function Right() {
           </div>
         ))}
 
-        <button className="text-blue-500 mt-2 hover:underline">
+        <button className="text-blue-500 hover:underline">
           Show more
         </button>
+        </div>
 
         <div className="mt-2 text-gray-400 text-xs">
           <p className="flex gap-2">

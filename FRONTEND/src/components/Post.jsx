@@ -30,13 +30,16 @@ export default function Post() {
   const { tweets, error } = useSelector((state) => state.tweet);
   const { setShowSignIn, showSignUp } = useContext(AppContext);
 
+  const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
+  const tweetsToRender = jwt ? tweets : publicTweets;
+
+  // Fetch tweets on load or auth change
   useEffect(() => {
-    setLoading(true);
     const jwt = localStorage.getItem("jwt");
+    setLoading(true);
 
     if (!jwt && !showSignUp) {
       setShowSignIn(true);
-
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tweets/`)
         .then((res) => res.json())
         .then((data) => {
@@ -47,16 +50,44 @@ export default function Post() {
           setShowSignIn(true);
         })
         .finally(() => setLoading(false));
-    } else {
+    } else if (jwt) {
       dispatch(getAllTweets()).finally(() => setLoading(false));
     }
+  }, [dispatch, showSignUp, setShowSignIn]);
 
+  // React to changes in localStorage (login/logout in another tab)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const jwt = localStorage.getItem("jwt");
+      setLoading(true);
+
+      if (!jwt) {
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tweets/`)
+          .then((res) => res.json())
+          .then((data) => {
+            setPublicTweets(data);
+          })
+          .catch((err) => console.error("Error fetching public tweets:", err))
+          .finally(() => setLoading(false));
+      } else {
+        dispatch(getAllTweets()).finally(() => setLoading(false));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [dispatch]);
+
+  useEffect(() => {
     if (error) {
+      localStorage.removeItem("jwt");
       dispatch(logout());
+      setShowSignIn(true);
     }
-  }, [error, dispatch, setShowSignIn, showSignUp]);
+  }, [error, dispatch, setShowSignIn]);
 
   const requireAuth = (callback) => {
+    const jwt = localStorage.getItem("jwt");
     if (!jwt) {
       setShowSignIn(true);
       return;
@@ -70,7 +101,7 @@ export default function Post() {
       setSelectedTweetId(null);
     }
   };
-  
+
   const handleLike = (tweetId) => {
     requireAuth(() => {
       setLikedTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
@@ -79,7 +110,7 @@ export default function Post() {
         .then(() => dispatch(getAllTweets()));
     });
   };
-  
+
   const handleRetweet = (tweetId) => {
     requireAuth(() => {
       setRetweetTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
@@ -88,23 +119,19 @@ export default function Post() {
         .then(() => dispatch(getAllTweets()));
     });
   };
-  
+
   const handleMenuToggle = (tweetId) => {
     requireAuth(() => {
       setSelectedTweetId(tweetId);
       setMenuOpen(!menuOpen);
     });
   };
-  
+
   const handleDelete = (tweetId) => {
     requireAuth(() => {
-      dispatch(deleteTweet(tweetId));
+      dispatch(deleteTweet(tweetId)).then(() => dispatch(getAllTweets()));
     });
   };
-  
-
-  const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
-  const tweetsToRender = jwt ? tweets : publicTweets;
 
   if (loading) {
     return (
@@ -113,13 +140,6 @@ export default function Post() {
       </div>
     );
   }
-
-  if (error) {
-    setShowSignIn(true);
-  }
-
-  console.log(publicTweets, "publicTweets");
-  
 
   return (
     <div className="w-full flex flex-col">
@@ -165,7 +185,7 @@ export default function Post() {
                 </div>
 
                 <Link href={`/tweet/${tweet.id}`} className="mt-2 block">
-                  <p className="text-white text-xl">{tweet.content}</p>
+                  <p className="text-white text-l">{tweet.content}</p>
                   {tweet.image && (
                     <div className="mt-4 border border-gray-700 rounded-3xl overflow-hidden">
                       <Image
