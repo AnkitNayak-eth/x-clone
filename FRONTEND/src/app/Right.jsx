@@ -19,9 +19,9 @@ export default function Right() {
       }
     };
   return (
-    <div className="text-white p-4 w-full flex flex-col gap-4 ">
-      <div className=" text-gray-400 rounded-full flex items-center px-4 py-3 w-full border border-gray-700">
-        <GoSearch size={24} className="mr-3" />
+    <div className="text-white p-4 w-full flex flex-col gap-2 ">
+      <div className=" text-gray-400 rounded-full flex items-center px-2 py-2 w-full border border-gray-700">
+        <GoSearch size={24} className="mr-4" />
         <input
           type="text"
           placeholder="Search"

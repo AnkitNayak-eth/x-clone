@@ -45,7 +45,7 @@ export default function Left() {
   {navigationMenu.map((item, index) => (
     <div
       key={index}
-      className="cursor-pointer flex gap-4 p-3 items-center hover:bg-[rgb(24,24,24)] rounded-full"
+      className="cursor-pointer flex gap-4 p-2 items-center hover:bg-[rgb(24,24,24)] rounded-full"
       onClick={(e) => {
         if (!user) {
           e.preventDefault();

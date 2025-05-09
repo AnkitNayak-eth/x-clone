@@ -42,7 +42,10 @@ public class SecurityConfiguration {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration corsConfiguration = new CorsConfiguration();
-                corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+                corsConfiguration.setAllowedOrigins(Arrays.asList(
+                        "http://localhost:3000",
+                        "https://x-clone-web-app.vercel.app",
+                        "https://devspring.duckdns.org"));
                 corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
                 corsConfiguration.setAllowCredentials(true);
                 corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
