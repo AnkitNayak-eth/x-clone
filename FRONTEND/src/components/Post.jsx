@@ -31,63 +31,32 @@ export default function Post() {
   const { setShowSignIn, showSignUp } = useContext(AppContext);
 
   const jwt = typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
-  const tweetsToRender = jwt ? tweets : publicTweets;
 
-  // Fetch tweets on load or auth change
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
     setLoading(true);
 
     if (!jwt && !showSignUp) {
       setShowSignIn(true);
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tweets/`)
         .then((res) => res.json())
-        .then((data) => {
-          setPublicTweets(data);
-        })
+        .then((data) => setPublicTweets(data))
         .catch((err) => {
           console.error("Error fetching public tweets:", err);
           setShowSignIn(true);
         })
         .finally(() => setLoading(false));
-    } else if (jwt) {
+    } else {
       dispatch(getAllTweets()).finally(() => setLoading(false));
     }
-  }, [dispatch, showSignUp, setShowSignIn]);
-
-  // React to changes in localStorage (login/logout in another tab)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const jwt = localStorage.getItem("jwt");
-      setLoading(true);
-
-      if (!jwt) {
-        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tweets/`)
-          .then((res) => res.json())
-          .then((data) => {
-            setPublicTweets(data);
-          })
-          .catch((err) => console.error("Error fetching public tweets:", err))
-          .finally(() => setLoading(false));
-      } else {
-        dispatch(getAllTweets()).finally(() => setLoading(false));
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [dispatch]);
+  }, [dispatch, setShowSignIn, showSignUp, jwt]);
 
   useEffect(() => {
-    if (error) {
-      localStorage.removeItem("jwt");
-      dispatch(logout());
+    if (error === "Unauthorized") {
       setShowSignIn(true);
     }
   }, [error, dispatch, setShowSignIn]);
 
   const requireAuth = (callback) => {
-    const jwt = localStorage.getItem("jwt");
     if (!jwt) {
       setShowSignIn(true);
       return;
@@ -107,7 +76,14 @@ export default function Post() {
       setLikedTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
       dispatch(likeTweet(tweetId))
         .unwrap()
-        .then(() => dispatch(getAllTweets()));
+        .then(() => dispatch(getAllTweets()))
+        .catch((err) => {
+          console.error("Like error:", err);
+          if (err === "Unauthorized") {
+            setShowSignIn(true);
+            dispatch(logout());
+          }
+        });
     });
   };
 
@@ -116,7 +92,14 @@ export default function Post() {
       setRetweetTweets((prev) => ({ ...prev, [tweetId]: !prev[tweetId] }));
       dispatch(createReTweet(tweetId))
         .unwrap()
-        .then(() => dispatch(getAllTweets()));
+        .then(() => dispatch(getAllTweets()))
+        .catch((err) => {
+          console.error("Retweet error:", err);
+          if (err === "Unauthorized") {
+            setShowSignIn(true);
+            dispatch(logout());
+          }
+        });
     });
   };
 
@@ -129,9 +112,13 @@ export default function Post() {
 
   const handleDelete = (tweetId) => {
     requireAuth(() => {
-      dispatch(deleteTweet(tweetId)).then(() => dispatch(getAllTweets()));
+      dispatch(deleteTweet(tweetId)).catch((err) => {
+        console.error("Delete error:", err);
+      });
     });
   };
+
+  const tweetsToRender = jwt ? tweets : publicTweets;
 
   if (loading) {
     return (
@@ -149,10 +136,7 @@ export default function Post() {
           const isRetweet = RetweetTweets[tweet.id] ?? tweet.retweet;
 
           return (
-            <div
-              key={tweet.id}
-              className="flex gap-4 w-full border-b border-gray-700 p-5"
-            >
+            <div key={tweet.id} className="flex gap-4 w-full border-b border-gray-700 p-5">
               <div className="flex-shrink-0">
                 <Image
                   src={tweet.user?.image || Avatar}
@@ -185,7 +169,7 @@ export default function Post() {
                 </div>
 
                 <Link href={`/tweet/${tweet.id}`} className="mt-2 block">
-                  <p className="text-white text-l">{tweet.content}</p>
+                  <p className="text-white text-xl">{tweet.content}</p>
                   {tweet.image && (
                     <div className="mt-4 border border-gray-700 rounded-3xl overflow-hidden">
                       <Image
@@ -210,10 +194,7 @@ export default function Post() {
                   </button>
 
                   {menuOpen && selectedTweetId === tweet.id && (
-                    <PostComment
-                      tweetId={selectedTweetId}
-                      handleClose={handleClose}
-                    />
+                    <PostComment tweetId={selectedTweetId} handleClose={handleClose} />
                   )}
 
                   <button
@@ -244,6 +225,7 @@ export default function Post() {
                     <IoStatsChart size={24} />
                     <span>0</span>
                   </button>
+
                   <div className="flex gap-4">
                     <button className="hover:text-gray-300">
                       <FaRegBookmark size={24} />
